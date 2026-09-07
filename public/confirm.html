@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirm your email</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 12px; }
+  p { font-size: 0.95rem; color: #6b7280; margin: 8px 0; }
+  .btn {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  .small { font-size: 0.85rem; color: #9ca3af; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Open the app to confirm</h1>
+  <p>Tap the button below to confirm your email address.</p>
+  <a id="openBtn" href="#" class="btn">Open App</a>
+  <p class="small">If the app doesn't open, install it from the App Store or Google Play and try again.</p>
+</div>
+<script>
+  // Read query params: token, app, type
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('token') || '';
+  var app = params.get('app') || 'clockcard';
+  var type = params.get('type') || 'signup';
+
+  var scheme = app === 'eventa' ? 'eventa' : 'clockcard';
+  var appName = app === 'eventa' ? 'Eventa' : 'ClockCard';
+  var host = type === 'reset' ? 'password-reset' : 'auth-callback';
+  var pkg = app === 'eventa' ? 'com.kosd.eventa' : 'com.kosd.log_inattendancesafeguard';
+  var playUrl = 'https://play.google.com/store/apps/details?id=' + pkg;
+
+  // Android intent: URL — works when tapped as a link
+  var intentUrl = 'intent://' + host + '?token=' + encodeURIComponent(token) +
+    '#Intent;scheme=' + scheme + ';package=' + pkg +
+    ';S.browser_fallback_url=' + encodeURIComponent(playUrl) + ';end';
+
+  // iOS custom scheme
+  var iosUrl = scheme + '://' + host + '?token=' + encodeURIComponent(token);
+
+  // Detect platform
+  var ua = navigator.userAgent || '';
+  var isAndroid = /android/i.test(ua);
+  var isIOS = /iphone|ipad|ipod/i.test(ua);
+
+  var openUrl = isAndroid ? intentUrl : iosUrl;
+
+  // Update button
+  var btn = document.getElementById('openBtn');
+  btn.href = openUrl;
+  btn.textContent = 'Open ' + appName;
+
+  // Update title
+  document.title = type === 'reset' ? 'Reset your ' + appName + ' password' : 'Confirm your ' + appName + ' account';
+
+  // Auto-redirect: use location.replace which is more reliable
+  // On Android, intent: URLs work from JavaScript in Chrome
+  // On iOS, try iframe approach
+  if (isAndroid) {
+    window.location.replace(intentUrl);
+  } else if (isIOS) {
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = iosUrl;
+    document.body.appendChild(iframe);
+    setTimeout(function() { document.body.removeChild(iframe); }, 2000);
+  }
+</script>
+</body>
+</html>

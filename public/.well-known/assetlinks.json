@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kosd.eventa",
+      "sha256_cert_fingerprints": [
+        "7A:CE:67:7C:6F:D4:73:FF:9D:FF:2A:F3:CE:40:73:A0:B2:EA:0E:27:F4:A7:4E:BC:C4:D0:C7:DF:4E:E5:B0:E8"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kosd.log_inattendancesafeguard",
+      "sha256_cert_fingerprints": [
+        "7A:CE:67:7C:6F:D4:73:FF:9D:FF:2A:F3:CE:40:73:A0:B2:EA:0E:27:F4:A7:4E:BC:C4:D0:C7:DF:4E:E5:B0:E8"
+      ]
+    }
+  }
+]
